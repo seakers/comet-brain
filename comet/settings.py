@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,21 +26,38 @@ SECRET_KEY = 'django-insecure-62-k*e0#rd(6l55%b)k+44ho7n^d7133+79toa%=62rg)ud8$#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'brain'
+]
+
+USE_X_FORWARDED_HOST = True
+
 
 
 # Application definition
 
 INSTALLED_APPS = [
+
+    # Installed Packages
+    'channels',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+
+    # Comet APIs
+    'comet_auth'
+
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -75,8 +93,12 @@ WSGI_APPLICATION = 'comet.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'comet',
+        'USER': os.environ['SQL_USER'],
+        'PASSWORD': os.environ['SQL_PASSWORD'],
+        'HOST': os.environ['POSTGRES_HOST'],
+        'PORT': os.environ['POSTGRES_PORT'],
     }
 }
 
@@ -100,24 +122,65 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# CORS & CSRF
+
+CORS_ORIGIN_WHITELIST = (
+    'http://daphne.engr.tamu.edu',
+    'http://localhost:8080',
+    'http://dev.selva-research.com',
+    'http://prod.selva-research.com'
+)
+
+CORS_ALLOW_CREDENTIALS = True
+
+
+CSRF_TRUSTED_ORIGINS = (
+    'http://daphne.engr.tamu.edu',
+    'http://localhost:8080',
+    'http://dev.selva-research.com',
+    'http://prod.selva-research.com'
+)
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Chicago'
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(os.environ['REDIS_HOST'], os.environ['REDIS_PORT'])],
+        }
+    },
+}
+
+ASGI_APPLICATION = 'comet.asgi.application'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# AWS
+DEPLOYMENT_TYPE = os.environ['DEPLOYMENT_TYPE']
+
