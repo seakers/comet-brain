@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  brain:
+    build:
+      dockerfile: DockerfileDev
+      context: .
+    image: apazagab/comet-brain:latest
+    ports:
+      - 8000:8000
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+    tty: true
+    container_name: comet-brain
+    command: bash
+networks:
+  default:
+    name: comet-network
+    external: true

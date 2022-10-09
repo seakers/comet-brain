@@ -1,0 +1,12 @@
+.idea
+.env
+*.DS_Store
+*.ipynb
+/logs
+.vscode
+*.pyc
+db.sqlite3
+/logs/comet.log
+static/
+venv/
+venv_linux/
