@@ -23,7 +23,7 @@ COPY ./supervisord.conf  /etc/supervisor
 # --> 3. Copy Brain + create dirs
 WORKDIR /app
 COPY ./. /app
-WORKDIR /app/logs
+RUN mkdir /app/logs
 RUN touch /app/logs/comet.logs && \
     touch /app/logs/brain.out.log && \
     touch /app/logs/brain.err.log
