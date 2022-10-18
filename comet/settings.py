@@ -26,10 +26,13 @@ SECRET_KEY = 'django-insecure-62-k*e0#rd(6l55%b)k+44ho7n^d7133+79toa%=62rg)ud8$#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = [
+#     'localhost',
+#     '127.0.0.1',
+#     'brain'
+# ]
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'brain'
+    '*'
 ]
 
 USE_X_FORWARDED_HOST = True
@@ -59,6 +62,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'comet.HealthCheckMiddleware.HealthCheckMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -124,11 +128,26 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # CORS & CSRF
 
+if os.environ['DEPLOYMENT_TYPE'] == 'aws':
+    # CSRF_COOKIE_SECURE = True
+    # CSRF_COOKIE_SAMESITE = 'None'
+    CSRF_COOKIE_DOMAIN = '.selva-research.com'
+    # SESSION_COOKIE_SECURE = True
+    # SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_DOMAIN = '.selva-research.com'
+
+
+
 CORS_ORIGIN_WHITELIST = (
     'http://daphne.engr.tamu.edu',
     'http://localhost:8080',
     'http://dev.selva-research.com',
-    'http://prod.selva-research.com'
+    'http://prod.selva-research.com',
+    'http://comet-bucket.selva-research.com',
+    'http://comet-load-balancer-761241085.us-east-2.elb.amazonaws.com',
+    'https://comet-load-balancer-761241085.us-east-2.elb.amazonaws.com',
+    'http://comet-services.selva-research.com:8000',
+    'https://comet-services.selva-research.com:443'
 )
 
 CORS_ALLOW_CREDENTIALS = True
@@ -138,7 +157,12 @@ CSRF_TRUSTED_ORIGINS = (
     'http://daphne.engr.tamu.edu',
     'http://localhost:8080',
     'http://dev.selva-research.com',
-    'http://prod.selva-research.com'
+    'http://prod.selva-research.com',
+    'http://comet-bucket.selva-research.com',
+    'http://comet-load-balancer-761241085.us-east-2.elb.amazonaws.com',
+    'https://comet-load-balancer-761241085.us-east-2.elb.amazonaws.com',
+    'http://comet-services.selva-research.com:8000',
+    'https://comet-services.selva-research.com:443'
 )
 
 
@@ -160,7 +184,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 CHANNEL_LAYERS = {
@@ -183,4 +207,50 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # AWS
 DEPLOYMENT_TYPE = os.environ['DEPLOYMENT_TYPE']
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '[%(asctime)s] - %(name)s - %(levelname)s - %(message)s'
+        },
+        'standard': {
+            'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%Y/%m/%d %H:%M:%S"
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+        },
+        'null': {
+            'class': 'logging.NullHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'debugging': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'config': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
 

@@ -1,5 +1,6 @@
 .idea
 .env
+.env_prod
 *.DS_Store
 *.ipynb
 /logs
