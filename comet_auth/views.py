@@ -221,7 +221,6 @@ class CheckStatus(APIView):
 
         user_info = get_or_create_user_information(request.session, request.user)
 
-        # problem: is now the problem_id (from the database)
         response = {
             'username': request.user.username,
             'email': 'placeholder',
@@ -265,6 +264,9 @@ class GetUserPk(APIView):
             return Response({'user_id': users[0].id})
         else:
             return Response({'status': 'query returned more than one users'})
+
+
+
 
 
 

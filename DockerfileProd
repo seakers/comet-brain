@@ -7,8 +7,8 @@ RUN apt-get -y update &&\
     apt-get -y install build-essential manpages-dev
 
 # --> 1. Copy Requiresments + Install
-WORKDIR /app
-COPY requirements.txt /app/requirements.txt
+WORKDIR /installs
+COPY requirements.txt /installs/requirements.txt
 RUN pip3 install --no-cache-dir -r ./requirements.txt
 RUN spacy download en_core_web_sm
 
@@ -22,11 +22,12 @@ COPY ./supervisord.conf  /etc/supervisor
 
 # --> 3. Copy Brain + create dirs
 WORKDIR /app
-COPY ./. /app
-RUN mkdir /app/logs
-RUN touch /app/logs/comet.logs && \
-    touch /app/logs/brain.out.log && \
-    touch /app/logs/brain.err.log
+COPY ./comet /app/comet
+COPY ./comet_auth /app/comet_auth
+COPY ./comet_ws /app/comet_ws
+COPY .env .env_prod manage.py migrate.sh run.sh run_prod.sh stop.sh ./
+
+
 # --> 4. Ensure Django Migrations are Applied (DEPRECATED)
 #RUN python3 manage.py migrate --run-syncdb
 

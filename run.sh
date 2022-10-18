@@ -4,15 +4,25 @@
 ### FCGI METHOD ###
 ###################
 
-# --> 1. Restart supervisorctl
-if [ "$(supervisorctl pid)" = "unix:///var/run/supervisor.sock no such file" ]; then
-    echo '--> Supervisorclt not running... '
-else
+
+
+# --> 2. Restart supervisorctl
+if [ "$(supervisorctl pid)" != "unix:///var/run/supervisor.sock no such file" ]; then
     . /app/stop.sh
     kill -s SIGTERM $(supervisorctl pid)
 fi
 
-# --> 2. Set supervisord.conf file environment
+
+# --> 3. Create logs dir if DNE
+if [ ! -d /app/logs ]; then
+  echo "CREATING DIR"
+  mkdir -p /app/logs;
+else
+  echo "DIR EXISTS"
+fi
+
+
+# --> 4. Set supervisord.conf file environment
 INIT_SUPERVISOR="true"
 if [ "$INIT_SUPERVISOR" = "true" ]; then
     cd /app
@@ -22,8 +32,10 @@ if [ "$INIT_SUPERVISOR" = "true" ]; then
     supervisord -c /etc/supervisor/supervisord.conf
 fi
 
-# --> 3. Run brain
+
+# --> 5. Start brain
 supervisorctl start brain:*
 
-# --> 4. Tail the output log file
-tail -f /app/logs/brain.out.log /app/logs/brain.err.log
+
+# --> 6. Tail the output log file
+tail -F /app/logs/brain.out.log /app/logs/brain.err.log
