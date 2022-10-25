@@ -55,7 +55,10 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # Comet APIs
-    'comet_auth'
+    'comet',
+    'comet_auth',
+    'comet_assistant',
+    'comet_problem'
 
 ]
 

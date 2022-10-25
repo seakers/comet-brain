@@ -1,8 +1,22 @@
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.contrib.sessions.models import Session
+from asgiref.sync import SyncToAsync, sync_to_async
 
 from comet_auth.models import UserInformation
+from comet_problem.models import Problem, UserProblem, Architecture, Objective, ObjectiveValue
+
+from comet_problem.utils import add_user_to_problem
+from comet_problem.default import default_problem
+
+@sync_to_async
+def save_user_info_async(user_info: UserInformation):
+    user_info.save()
+
+@sync_to_async
+def get_or_create_user_information_async(session, user) -> UserInformation:
+    return get_or_create_user_information(session, user)
+
 
 
 
@@ -35,6 +49,10 @@ def get_user_information(session, user):
 
     if len(userinfo_qs) >= 1:
         user_info = userinfo_qs[0]
+
+        # --> Add user to default problem (defined in comet_problem.default)
+        add_user_to_problem(user_info, name=default_problem['name'])
+
         return user_info
     elif len(userinfo_qs) == 0:
         return None
@@ -51,7 +69,8 @@ def create_user_information(session_key=None, username=None):
     assert session_key is not None or username is not None
 
     with transaction.atomic():
-        # --> 1. UserInformation
+
+        # --> 1. Create UserInformation
         if username is not None and session_key is None:
             user_info = UserInformation(user=User.objects.get(username=username))
         elif session_key is not None and username is None:
@@ -61,8 +80,10 @@ def create_user_information(session_key=None, username=None):
             user_info = UserInformation(session=q_session)
         else:
             raise Exception("Unexpected input for create_user_information")
-
         user_info.save()
+
+        # --> 2. Add user to default problem (defined in comet_problem.default)
+        add_user_to_problem(user_info, name=default_problem['name'])
 
         return user_info
 

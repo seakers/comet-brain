@@ -1,7 +1,7 @@
 import json
 import os
+import threading
 
-from django.contrib.auth.forms import PasswordResetForm
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from rest_framework.views import APIView
@@ -13,11 +13,7 @@ from asgiref.sync import async_to_sync, sync_to_async
 from comet_auth.helpers import get_or_create_user_information
 from comet_auth.models import UserInformation
 
-
-# from comet_auth.helpers import get_or_create_user_information
-# from daphne_context.models import UserInformation
-
-
+from comet_problem.aws.ServiceManager import ServiceManager
 
 
 class Register(APIView):
@@ -63,12 +59,13 @@ class Register(APIView):
         login(request, user)
 
 
-        # # --> 7. Initialize services
-        # def init_service(service_manager):
-        #     async_to_sync(service_manager.initialize)(blocking=True)
-        # service_manager = ServiceManager(userinfo)
-        # thread = threading.Thread(target=init_service, args=(service_manager,))
-        # thread.start()
+        # --> 7. Initialize services
+        def init_service(service_manager):
+            async_to_sync(service_manager.initialize)(blocking=True)
+        print('\n\n --> INITIALIZING SERVICES')
+        service_manager = ServiceManager(userinfo)
+        thread = threading.Thread(target=init_service, args=(service_manager,))
+        thread.start()
 
 
         # --> 8. Return
@@ -76,6 +73,7 @@ class Register(APIView):
             'status': 'logged_in',
             'username': username,
             'pk': get_user_pk(username),
+            'user_info_pk': get_user_info_pk(username)
         })
 
 
@@ -229,6 +227,9 @@ class CheckStatus(APIView):
         if request.user.is_authenticated:
             response['is_logged_in'] = True
             response['pk'] = get_user_pk(request.user.username)
+            response['user_info_pk'] = user_info.id
+            response['evaluation_queue'] = user_info.design_evaluator_request_queue_url
+            response['problem_id'] = user_info.problem_id
             response['email'] = get_user_email(request.user.username)
         else:
             if 'is_guest' in request.session:
@@ -277,6 +278,19 @@ def get_user_pk(username):
     else:
         print("---> USER PK ERROR")
         return False
+
+
+def get_user_info_pk(username):
+    if User.objects.filter(username__exact=username).exists():
+        user = User.objects.get(username=username)
+        if UserInformation.objects.filter(user=user).exists():
+            user_info = UserInformation.objects.get(user=user)
+            return user_info.id
+        else:
+            print('--> USER INFO OBJ DNE')
+    else:
+        print('--> USER OBJ DNE')
+
 
 
 def get_user_email(username):
