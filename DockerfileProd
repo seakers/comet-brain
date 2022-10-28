@@ -16,8 +16,7 @@ RUN spacy download en_core_web_sm
 WORKDIR /run/daphne
 WORKDIR /etc/supervisor
 RUN pip3 install --no-cache-dir supervisor
-RUN mkdir /var/log/supervisor                 && \
-    touch /var/log/supervisor/supervisord.log
+RUN mkdir /var/log/supervisor && touch /var/log/supervisor/supervisord.log
 COPY ./supervisord.conf  /etc/supervisor
 
 # --> 3. Copy Brain + create dirs
@@ -25,6 +24,8 @@ WORKDIR /app
 COPY ./comet /app/comet
 COPY ./comet_auth /app/comet_auth
 COPY ./comet_ws /app/comet_ws
+COPY ./comet_problem /app/comet_problem
+COPY ./comet_assistant /app/comet_assistant
 COPY .env .env_prod manage.py migrate.sh run.sh run_prod.sh stop.sh ./
 
 

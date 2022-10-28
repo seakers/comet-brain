@@ -26,11 +26,6 @@ SECRET_KEY = 'django-insecure-62-k*e0#rd(6l55%b)k+44ho7n^d7133+79toa%=62rg)ud8$#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = [
-#     'localhost',
-#     '127.0.0.1',
-#     'brain'
-# ]
 ALLOWED_HOSTS = [
     '*'
 ]
@@ -59,7 +54,6 @@ INSTALLED_APPS = [
     'comet_auth',
     'comet_assistant',
     'comet_problem'
-
 ]
 
 MIDDLEWARE = [

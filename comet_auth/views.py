@@ -224,6 +224,8 @@ class CheckStatus(APIView):
             'email': 'placeholder',
         }
 
+
+
         if request.user.is_authenticated:
             response['is_logged_in'] = True
             response['pk'] = get_user_pk(request.user.username)
@@ -232,22 +234,17 @@ class CheckStatus(APIView):
             response['problem_id'] = user_info.problem_id
             response['email'] = get_user_email(request.user.username)
         else:
-            if 'is_guest' in request.session:
-                response['is_guest'] = request.session['is_guest']
-            else:
-                response['is_guest'] = False  # --> Assume user hasn't selected guest if is_guest key not in session
             response['is_logged_in'] = False
         return Response(response)
 
 
 class GenerateSession(APIView):
     """
-    Simply generate a session for the user (solves a ton of bugs)
+    Generate User Session if there is none
     """
     def post(self, request, format=None):
         # Is this the first visit for this cookie?
         if request.session.session_key is None:
-            print('--> GENERATING SESSION: GenerateSession')
             request.session['is_guest'] = False
         request.session.save()                        # If None, create new session key and save
         return Response("Session generated")
