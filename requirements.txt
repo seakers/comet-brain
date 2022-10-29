@@ -49,10 +49,6 @@ multidict==6.0.2
 multiprocess==0.70.13
 murmurhash==1.0.8
 numpy==1.23.3
-nvidia-cublas-cu11==11.10.3.66
-nvidia-cuda-nvrtc-cu11==11.7.99
-nvidia-cuda-runtime-cu11==11.7.99
-nvidia-cudnn-cu11==8.5.0.96
 packaging==21.3
 pandas==1.5.1
 pathy==0.6.2
@@ -84,10 +80,7 @@ sqlparse==0.4.3
 srsly==2.4.4
 supervisor==4.2.4
 thinc==8.0.17
-tokenizers==0.13.1
-torch==1.13.0
 tqdm==4.64.1
-transformers==4.23.1
 Twisted==22.8.0
 txaio==22.2.1
 typer==0.4.2
@@ -95,7 +88,6 @@ typing_extensions==4.4.0
 urllib3==1.26.12
 wasabi==0.10.1
 wrapt==1.14.1
-xxhash==3.1.0
 yarl==1.8.1
 zipp==3.9.0
 zope.interface==5.4.0
