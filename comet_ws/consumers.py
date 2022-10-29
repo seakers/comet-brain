@@ -21,7 +21,6 @@ class CometConsumer(AsyncJsonWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
     async def connect(self):
         """
             Called when the websocket is handshaking as part of initial connection.
@@ -41,11 +40,26 @@ class CometConsumer(AsyncJsonWebsocketConsumer):
         user_information.channel_name = self.channel_name
         await save_user_info_async(user_information)
 
-        # --> 3. Add hash-key and channel name to channel groups
+        # --> 4. Add hash-key and channel name to channel groups
         key = self.scope['path'].lstrip('api/')
         hash_key = hashlib.sha256(key.encode('utf-8')).hexdigest()
         print('--> MORE DETAILS:', hash_key, self.channel_name)
         await self.channel_layer.group_add(hash_key, self.channel_name)
+
+    async def disconnect(self, code):
+        """
+            Called when the WebSocket closes for any reason.
+        """
+
+        # --> 1. Get key and hash-key
+        key = self.scope['path'].lstrip('api/')
+        hash_key = hashlib.sha256(key.encode('utf-8')).hexdigest()
+
+        # --> 2. Remove from channel name / hash-key from channel group
+        await self.channel_layer.group_discard(hash_key, self.channel_name)
+
+
+
 
 
     async def receive_json(self, content, **kwargs):
@@ -68,7 +82,6 @@ class CometConsumer(AsyncJsonWebsocketConsumer):
 
 
         # --> 3. Handle message based on: msg_type
-        # - ping
         if content.get('msg_type') == 'ping':
             print("Ping received")
             await self.send_json({
@@ -79,20 +92,6 @@ class CometConsumer(AsyncJsonWebsocketConsumer):
                 await self.ping_services(user_info, content)
         elif content.get('msg_type') == 'resource_msg':
             await self.resource_msg(user_info, content)
-
-
-
-    async def disconnect(self, code):
-        """
-            Called when the WebSocket closes for any reason.
-        """
-
-        # --> 1. Get key and hash-key
-        key = self.scope['path'].lstrip('api/')
-        hash_key = hashlib.sha256(key.encode('utf-8')).hexdigest()
-
-        # --> 2. Remove from channel name / hash-key from channel group
-        await self.channel_layer.group_discard(hash_key, self.channel_name)
 
 
 

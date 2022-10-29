@@ -11,3 +11,5 @@ db.sqlite3
 static/
 venv/
 venv_linux/
+comet_assistant/assistant/data
+comet_assistant/assistant/models
