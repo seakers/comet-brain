@@ -11,10 +11,11 @@ class ModelLoader:
         self.nn_models = {}
 
         for file in os.scandir(self.model_folder_path):
-            if file.is_file():
-                role_file_path = Path(self.model_folder_path, file.name)
-                role_name = role_file_path.stem
-                self.nn_models[role_name] = AutoModelForSequenceClassification.from_pretrained(role_file_path)
+            if file.is_dir():
+                role_name = file.name
+                role_model_path = self.model_folder_path / role_name
+                loaded_model = AutoModelForSequenceClassification.from_pretrained(role_model_path)
+                self.nn_models[role_name] = loaded_model
 
 
     def get_model(self, key):

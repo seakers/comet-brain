@@ -9,12 +9,13 @@ from comet_assistant.assistant.ModelLoader import ModelLoader
 class Classifier:
 
     def __init__(self):
+        self.roles = ["Analyst", "Engineer", "Critic", "Historian", "Teacher"]
         self.model_loader = ModelLoader()
 
     def classify_role(self, command):
         # Get Models
         tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
-        loaded_model = self.model_loader.get_model('general')
+        loaded_model = self.model_loader.get_model('General')
 
         # Evaluation
         # ==================================================

@@ -6,10 +6,14 @@ class Command(BaseCommand):
     help = 'Creates training data for comet models'
 
     def handle(self, *args, **options):
-        print('--> CREATING TRAINING DATA')
+        print('--> TEST COMMAND CLASSIFICATION')
         classifier = Classifier()
 
-        command = 'what are the driving features'
+        command = 'why does design 5 have this science score'
+
+        result = classifier.classify_role(command)
+
+        print(result)
 
 
 
