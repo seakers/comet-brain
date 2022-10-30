@@ -3,6 +3,11 @@
 
 default_problem = {
     'name': 'EPS Design (default)',
+
+    'dataset': {'name': 'Default'},
+    'architectures': [],
+
+
     'objectives': [
         ('Lifecycle Cost', 'minimize'),
         ('EPS Cost', 'minimize'),

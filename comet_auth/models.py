@@ -5,22 +5,23 @@ from django.db import models
 from rest_framework import serializers
 
 
-
 class UserInformation(models.Model):
-
     # Primary key tuple
     session = models.ForeignKey(Session, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
-    # Websockets communication
-    channel_name = models.CharField(max_length=120)
-
-    # Problem Info
-    problem_id = models.IntegerField(default=1)
-
     class Meta:
         unique_together = ("session", "user")
 
+    # Websockets communication
+    channel_name = models.CharField(max_length=120)
+
+    ####################
+    ### Problem Info ###
+    ####################
+
+    problem_id = models.IntegerField(default=1)
+    dataset_id = models.IntegerField(default=1)
 
     ########################
     ### AWS 2.0 Backends ###
@@ -44,7 +45,3 @@ class UserInformation(models.Model):
     genetic_algorithm_request_queue_url = models.TextField(null=True)
     genetic_algorithm_response_queue_name = models.TextField(null=True)  # user-1-comet-algorithm-response-queue
     genetic_algorithm_response_queue_url = models.TextField(null=True)
-
-
-
-
