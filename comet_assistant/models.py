@@ -11,7 +11,7 @@ class DialogueHistory(models.Model):
     user_information = models.ForeignKey(UserInformation, on_delete=models.CASCADE)
     message = models.TextField()
     message_type = models.TextField()
-    writer = models.TextField()
+    message_writer = models.TextField()
     date = models.DateTimeField()
 
 

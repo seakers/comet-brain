@@ -216,7 +216,7 @@ class SqsClient:
             }
         })
         if response_url is not None:
-            return await SqsClient.subscribe_to_message(response_url, 'statusAck', attempts=1)
+            return await SqsClient.subscribe_to_message(response_url, 'pingAck', attempts=1)
 
     @staticmethod
     async def send_build_msg(user_info, request_url, response_url=None):
@@ -230,6 +230,10 @@ class SqsClient:
                 },
                 'problem_id': {
                     'StringValue': str(user_info.problem_id),
+                    'DataType': 'String'
+                },
+                'dataset_id': {
+                    'StringValue': str(user_info.dataset_id),
                     'DataType': 'String'
                 },
                 'user_id': {
@@ -273,8 +277,13 @@ class SqsClient:
             }
         })
 
+
+
+
+
+
     @staticmethod
-    async def send_start_ga_msg(request_url, group_id, problem_id, dataset_id, response_url=None):
+    async def send_start_ga_msg(request_url, problem_id, dataset_id, response_url=None):
         response = await call_boto3_client_async('sqs', 'send_message', {
             'QueueUrl': request_url,
             'MessageBody': 'boto3',
@@ -294,10 +303,6 @@ class SqsClient:
                 "mutationProbability": {
                     "DataType": "String",
                     "StringValue": "0.01666"
-                },
-                "group_id": {
-                    "DataType": "String",
-                    "StringValue": str(group_id)
                 },
                 "problem_id": {
                     "DataType": "String",
@@ -351,6 +356,8 @@ class SqsClient:
                             'ReceiptHandle': message["ReceiptHandle"]
                         })
                         break_switch = True
+                    else:
+                        print('--> MESSAGE IS WRONG TYPE', message["MessageAttributes"]["msgType"]["StringValue"], msg_type)
                 if break_switch is True:
                     return subscription
         print('--> SQS SUB TIMEOUT ERROR')

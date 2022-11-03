@@ -106,15 +106,15 @@ class GeneticAlgorithmInstance(AbstractInstance):
     @property
     async def _definition(self):
         return {
-            "ImageId": "ami-07ecbec4e2200e873",  # DaphneServiceProdImagev1.0 TODO: create
+            "ImageId": "ami-070051842d02c244d",  # CometServiceProdImagev3.0
             "InstanceType": "t2.small",
             "MaxCount": 1,
             "MinCount": 1,
             "SecurityGroupIds": [
-                "sg-03871503ca9368508"
+                "sg-03ac54d2600b20d4c"
             ],
             "KeyName": 'gabe-master',
-            "SubnetId": "subnet-05cc334fd084cb66c",
+            "SubnetId": "subnet-08ae3e153dafe5362",
             "IamInstanceProfile": {
                 'Name': 'ecsInstanceRole'
             },

@@ -8,6 +8,7 @@ from comet_problem.models import Problem, UserProblem, Architecture, Objective, 
 
 from comet_problem.utils import add_user_to_problem
 from comet_problem.default import default_problem
+from comet_auth.database.UserDatabase import UserDatabase
 
 @sync_to_async
 def save_user_info_async(user_info: UserInformation):
@@ -51,7 +52,7 @@ def get_user_information(session, user):
         user_info = userinfo_qs[0]
 
         # --> Add user to default problem (defined in comet_problem.default)
-        add_user_to_problem(user_info, name=default_problem['name'])
+        user_db = UserDatabase(user_info)
 
         return user_info
     elif len(userinfo_qs) == 0:
@@ -83,7 +84,7 @@ def create_user_information(session_key=None, username=None):
         user_info.save()
 
         # --> 2. Add user to default problem (defined in comet_problem.default)
-        add_user_to_problem(user_info, name=default_problem['name'])
+        user_db = UserDatabase(user_info)
 
         return user_info
 

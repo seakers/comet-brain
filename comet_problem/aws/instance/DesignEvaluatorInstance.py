@@ -117,7 +117,8 @@ class DesignEvaluatorInstance(AbstractInstance):
             # "ImageId": "ami-02b34b6bd313c02f1",  # DesignEvaluatorProdImagev4.0
             # "ImageId": "ami-0ed4b8a5ca628fd8f",  # DesignEvaluatorProdImagev5.0
             # "ImageId": "ami-07ecbec4e2200e873",  # DaphneServiceProdImagev1.0
-            "ImageId": "ami-093ae41605f9e1f01",  # CometServiceProdImagev2.0
+            # "ImageId": "ami-093ae41605f9e1f01",  # CometServiceProdImagev2.0
+            "ImageId": "ami-070051842d02c244d",  # CometServiceProdImagev3.0
             "InstanceType": "t2.medium",
             "MaxCount": 1,
             "MinCount": 1,

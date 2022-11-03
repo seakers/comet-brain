@@ -20,8 +20,8 @@ class UserInformation(models.Model):
     ### Problem Info ###
     ####################
 
-    problem_id = models.IntegerField(default=1)
-    dataset_id = models.IntegerField(default=1)
+    problem_id = models.IntegerField(null=True, default=None)
+    dataset_id = models.IntegerField(null=True, default=None)
 
     ########################
     ### AWS 2.0 Backends ###

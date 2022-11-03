@@ -1,19 +1,20 @@
 
 
 
+
+
 default_problem = {
     'name': 'EPS Design (default)',
-
     'dataset': {'name': 'Default'},
     'architectures': [],
 
 
     'objectives': [
-        ('Lifecycle Cost', 'minimize'),
-        ('EPS Cost', 'minimize'),
-        ('Weighted Design Score', 'maximize'),
-        ('EPS Mass', 'minimize'),
-        ('Dry Mass', 'minimize'),
+        {'name': 'Lifecycle Cost', 'type': 'continuous', 'optimization': 'min', 'bounds': '[0, 10000000]'},
+        {'name': 'EPS Cost', 'type': 'continuous', 'optimization': 'min', 'bounds': '[0, 10000000]'},
+        {'name': 'Weighted Design Score', 'type': 'continuous', 'optimization': 'max', 'bounds': '[0, 10]'},
+        {'name': 'EPS Mass', 'type': 'continuous', 'optimization': 'min', 'bounds': '[0, 100000]'},
+        {'name': 'Dry Mass', 'type': 'continuous', 'optimization': 'min', 'bounds': '[0, 100000]'}
     ],
 
     'parameters': [
@@ -56,7 +57,7 @@ default_problem = {
             'name': 'Battery',
             'type': 'standard-form',
             'alternatives': [
-                {'value': 'Saft 8s4o', 'description': 'empty'},
+                {'value': 'Saft 8s4p', 'description': 'empty'},
                 {'value': 'Saft 11s16p', 'description': 'empty'},
                 {'value': 'Saft 4s1p VES16', 'description': 'empty'},
             ]

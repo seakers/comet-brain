@@ -15,6 +15,9 @@ from comet_auth.models import UserInformation
 
 from comet_problem.aws.ServiceManager import ServiceManager
 
+from comet_auth.database.UserDatabase import UserDatabase
+
+
 
 class Register(APIView):
     """
@@ -224,15 +227,14 @@ class CheckStatus(APIView):
             'email': 'placeholder',
         }
 
-
-
         if request.user.is_authenticated:
+            response = UserDatabase(user_info).get_userdata()
             response['is_logged_in'] = True
-            response['pk'] = get_user_pk(request.user.username)
-            response['user_info_pk'] = user_info.id
-            response['evaluation_queue'] = user_info.design_evaluator_request_queue_url
-            response['problem_id'] = user_info.problem_id
-            response['email'] = get_user_email(request.user.username)
+            # response['pk'] = get_user_pk(request.user.username)
+            # response['user_info_pk'] = user_info.id
+            # response['evaluation_queue'] = user_info.design_evaluator_request_queue_url
+            # response['problem_id'] = user_info.problem_id
+            # response['email'] = get_user_email(request.user.username)
         else:
             response['is_logged_in'] = False
         return Response(response)

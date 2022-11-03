@@ -9,27 +9,45 @@ from comet_auth.models import UserInformation
 
 class Problem(models.Model):
     name = models.TextField()
+    default = models.BooleanField(default=False)
+
+
+class Dataset(models.Model):
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    name = models.TextField()
+    default = models.BooleanField(default=False)
 
 
 
 class UserProblem(models.Model):
     user_information = models.ForeignKey(UserInformation, on_delete=models.CASCADE)
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    owner = models.BooleanField(default=True)
+
+
+class UserDataset(models.Model):
+    user_information = models.ForeignKey(UserInformation, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    owner = models.BooleanField(default=True)
 
 
 
 class Architecture(models.Model):
     user_information = models.ForeignKey(UserInformation, on_delete=models.CASCADE)
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     representation = models.TextField()
     evaluation_status = models.BooleanField(default=False)
+    origin = models.TextField(default='user')
 
 
 
 class Objective(models.Model):
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
     name = models.TextField()
-    type = models.TextField()
+    type = models.TextField()          # Options: continuous | discrete
+    optimization = models.TextField(default='min')  # Options: min | max
+    bounds = models.TextField(null=True, default=None)
 
 
 

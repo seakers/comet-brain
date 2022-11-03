@@ -278,7 +278,8 @@ class AbstractInstance:
     async def _ping_container(self):
         info = {
             'Status':       '-------',
-            'ProblemID':    '-------',
+            'problem_id':    '-------',
+            'dataset_id':    '-------',
             'VassarStatus': '-------'
         }
 
@@ -286,12 +287,14 @@ class AbstractInstance:
         if await self.get_instance_ssm_status() == 'Online' and await self.container_running():
             info['Status'] = 'Running'
             query = await SqsClient.send_ping_msg(self.ping_request_url, self.ping_response_url)
-            if query and 'PROBLEM_ID' in query and 'status' in query:
+            if query and 'problem_id' in query and 'status' in query:
                 info['VassarStatus'] = query['status']['StringValue']
-                info['PROBLEM_ID'] = query['PROBLEM_ID']['StringValue']
+                info['problem_id'] = query['problem_id']['StringValue']
+                info['dataset_id'] = query['dataset_id']['StringValue']
             else:
                 info['VassarStatus'] = 'Booting'
-                info['PROBLEM_ID'] = 'Booting'
+                info['problem_id'] = 'Booting'
+                info['dataset_id'] = 'Booting'
         else:
             info['Status'] = 'Stopped'
         return info
