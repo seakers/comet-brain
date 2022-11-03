@@ -136,8 +136,27 @@ class GeneticAlgorithmInstance(AbstractInstance):
     ############
 
     async def ping(self):
-        response = await super().ping()
+        response = dict()
+        response['instance'] = await self._ping_instance()
+        response['container'] = await self._ping_container()
+        response['init_status'] = await self.get_tag('RESOURCE_STATE')
+        response['PING_REQUEST_QUEUE'] = self.ping_request_url
+        response['PING_RESPONSE_QUEUE'] = self.ping_response_url
+        response['PRIVATE_REQUEST_QUEUE'] = self.private_request_url
+        response['PRIVATE_RESPONSE_QUEUE'] = self.private_response_url
         return response
+
+    async def _ping_container(self):
+        info = {
+            'Status': None
+        }
+        if await self.get_instance_ssm_status() == 'Online' and await self.container_running():
+            info['Status'] = 'Running'
+        else:
+            info['Status'] = 'Stopped'
+        return info
+
+
 
     ################
     ### CONSOLE  ###
