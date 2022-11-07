@@ -10,7 +10,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print('--> CLEANING DATABASE')
-        # UserDatabase.clean_all()
+        UserDatabase.clean_all()
+        # UserDatabase.clean_all_fast()
         ProblemDatabase.clean_all()
 
 

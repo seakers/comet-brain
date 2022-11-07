@@ -10,6 +10,15 @@ from comet_problem.models import Problem, UserProblem, Architecture, Objective, 
 from comet_problem.default import default_problem
 
 
+initial_datasets = [
+    {'name': 'Default', 'default': True},
+    {'name': '_ga', 'default': False},
+    {'name': '_analyst', 'default': False},
+    {'name': '_engineer', 'default': False},
+    {'name': '_critic', 'default': False},
+    {'name': '_historian', 'default': False},
+    {'name': '_teacher', 'default': False}
+]
 
 
 class ProblemDatabase:
@@ -98,6 +107,9 @@ class ProblemDatabase:
         else:
             raise Exception("--> DEFAULT DATASET DOESNT EXIST FOR PROBLEM")
 
+
+
+
     ##############
     ### Insert ###
     ##############
@@ -114,7 +126,7 @@ class ProblemDatabase:
         ProblemDatabase.insert_parameters(problem, problem_definition)
         ProblemDatabase.insert_decisions(problem, problem_definition)
         ProblemDatabase.insert_objectives(problem, problem_definition)
-        ProblemDatabase.insert_dataset(problem, problem_definition)
+        ProblemDatabase.insert_datasets(problem)
         return problem
 
     @staticmethod
@@ -128,10 +140,11 @@ class ProblemDatabase:
         return problem
 
     @staticmethod
-    def insert_dataset(problem, problem_definition):
-        if not Dataset.objects.filter(problem=problem).filter(name=problem_definition['dataset']['name']).exists():
-            entry = Dataset(problem=problem, name=problem_definition['dataset']['name'], default=True)
-            entry.save()
+    def insert_datasets(problem):
+        for dataset in initial_datasets:
+            if not Dataset.objects.filter(problem=problem).filter(name=dataset['name']).filter(default=dataset['default']).exists():
+                entry = Dataset(problem=problem, name=dataset['name'], default=dataset['default'])
+                entry.save()
 
     @staticmethod
     def insert_objectives(problem, problem_definition):
@@ -170,20 +183,6 @@ class ProblemDatabase:
 
 
 
-
-    @staticmethod
-    def insert_role_datasets():
-        from comet_auth.database.user_roles import roles
-        for role in roles:
-            for problem in Problem.objects.all():
-                if not Dataset.objects.filter(problem=problem).filter(name=role['dataset']):
-                    dataset = Dataset(problem=problem, name=role['dataset'], default=False)
-                    dataset.save()
-                else:
-                    dataset = Dataset.objects.get(problem=problem, name=role['dataset'])
-                    
-
-
     #############
     ### Clean ###
     #############
@@ -193,54 +192,62 @@ class ProblemDatabase:
     @staticmethod
     def clean_all():
         for problem in Problem.objects.all():
-            ProblemDatabase(problem=problem).clean()
+            ProblemDatabase.clean(problem)
 
+    @staticmethod
+    def clean(problem):
 
-    def clean(self):
+        ''' Steps (for each user)
+            1. Delete: Parameters
+            2. Delete: Decisions --> Alternatives
+            3. Delete: Datasets --> Architectures --> Objective Values
+            4. Delete: UserDatasets
+            5. Delete: Objectives
+            7. Delete: UserProblems
+            8. Delete: Problem
+        '''
 
         # --> Order of deletion
-        self.clean_parameters()
-        self.clean_decisions()
-        self.clean_datasets()
-        self.clean_objectives()
-        self.clean_problem()
+        ProblemDatabase.clean_parameters(problem)
+        ProblemDatabase.clean_decisions(problem)
+        ProblemDatabase.clean_datasets(problem)
+        ProblemDatabase.clean_objectives(problem)
+        ProblemDatabase.clean_user_problems(problem)
 
-    def clean_problem(self):
-        if UserProblem.objects.filter(problem=self.problem).exists():
-            entries = UserProblem.objects.filter(problem=self.problem)
-            for entry in entries:
-                entry.delete()
-        self.problem.delete()
-        self.problem = None
-        return None
+        problem.delete()
 
-    def clean_parameters(self):
-        if Parameter.objects.filter(problem=self.problem).exists():
-            entries = Parameter.objects.filter(problem=self.problem)
+    
+    @staticmethod
+    def clean_parameters(problem):
+        if Parameter.objects.filter(problem=problem).exists():
+            entries = Parameter.objects.filter(problem=problem)
             for entry in entries:
                 entry.delete()
 
-    def clean_decisions(self):
-        if Decision.objects.filter(problem=self.problem).exists():
-            for entry in Decision.objects.filter(problem=self.problem):
-                self.clean_alternatives(decision=entry)
+    @staticmethod
+    def clean_decisions(problem):
+        if Decision.objects.filter(problem=problem).exists():
+            for entry in Decision.objects.filter(problem=problem):
+                ProblemDatabase.clean_alternatives(decision=entry)
                 entry.delete()
 
-    def clean_alternatives(self, decision=None):
-        if decision:
-            if Alternative.objects.filter(decision=decision).exists():
-                for entry in Alternative.objects.filter(decision=decision):
-                    entry.delete()
+    @staticmethod
+    def clean_alternatives(decision):
+        if Alternative.objects.filter(decision=decision).exists():
+            for entry in Alternative.objects.filter(decision=decision):
+                entry.delete()
 
-    def clean_datasets(self):
-        if Dataset.objects.filter(problem=self.problem).exists():
-            entries = Dataset.objects.filter(problem=self.problem)
+    @staticmethod
+    def clean_datasets(problem):
+        if Dataset.objects.filter(problem=problem).exists():
+            entries = Dataset.objects.filter(problem=problem)
             for entry in entries:
-                self.clean_user_datasets(dataset=entry)
-                self.clean_architectures(dataset=entry)
+                ProblemDatabase.clean_user_datasets(dataset=entry)
+                ProblemDatabase.clean_architectures(dataset=entry)
                 entry.delete()
 
-    def clean_user_datasets(self, dataset=None):
+    @staticmethod
+    def clean_user_datasets(dataset=None):
         if dataset:
             if UserDataset.objects.filter(dataset=dataset).exists():
                 entries = UserDataset.objects.filter(dataset=dataset)
@@ -252,28 +259,24 @@ class ProblemDatabase:
                 for entry in entries:
                     entry.delete()
 
-    def clean_architectures(self, dataset=None):
-        if dataset:
-            if Architecture.objects.filter(problem=self.problem).filter(dataset=dataset).exists():
-                entries = Architecture.objects.filter(problem=self.problem).filter(dataset=dataset)
-                for entry in entries:
-                    self.clean_objective_values(architecture=entry)
-                    entry.delete()
-        else:
-            if Architecture.objects.filter(problem=self.problem).exists():
-                entries = Architecture.objects.filter(problem=self.problem)
-                for entry in entries:
-                    self.clean_objective_values(architecture=entry)
-                    entry.delete()
-
-    def clean_objectives(self):
-        if Objective.objects.filter(problem=self.problem).exists():
-            entries = Objective.objects.filter(problem=self.problem)
+    @staticmethod
+    def clean_architectures(dataset=None):
+        if Architecture.objects.filter(dataset=dataset).exists():
+            entries = Architecture.objects.filter(dataset=dataset)
             for entry in entries:
-                self.clean_objective_values(objective=entry)
+                ProblemDatabase.clean_objective_values(architecture=entry)
                 entry.delete()
 
-    def clean_objective_values(self, architecture=None, objective=None):
+    @staticmethod
+    def clean_objectives(problem):
+        if Objective.objects.filter(problem=problem).exists():
+            entries = Objective.objects.filter(problem=problem)
+            for entry in entries:
+                ProblemDatabase.clean_objective_values(objective=entry)
+                entry.delete()
+
+    @staticmethod
+    def clean_objective_values(architecture=None, objective=None):
         if architecture:
             if ObjectiveValue.objects.filter(architecture=architecture).exists():
                 entries = ObjectiveValue.objects.filter(architecture=architecture)
@@ -285,8 +288,22 @@ class ProblemDatabase:
                 for entry in entries:
                     entry.delete()
 
-
-
+    @staticmethod
+    def clean_user_problems(problem):
+        if UserProblem.objects.filter(problem=problem).exists():
+            entries = UserProblem.objects.filter(problem=problem)
+            for entry in entries:
+                entry.delete()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     #############
     ### Clone ###
     #############

@@ -290,7 +290,8 @@ class AbstractInstance:
             if query and 'problem_id' in query and 'status' in query:
                 info['VassarStatus'] = query['status']['StringValue']
                 info['problem_id'] = query['problem_id']['StringValue']
-                info['dataset_id'] = query['dataset_id']['StringValue']
+                if 'dataset_id' in query:
+                    info['dataset_id'] = query['dataset_id']['StringValue']
             else:
                 info['VassarStatus'] = 'Booting'
                 info['problem_id'] = 'Booting'

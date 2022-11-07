@@ -8,7 +8,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print('--> INDEXING DATABASE')
-        # ProblemDatabase.insert_default()
-        # ProblemDatabase.insert_role_datasets()
-        # UserDatabase.index_roles()
+        ProblemDatabase.insert_default()
 

@@ -163,31 +163,13 @@ class GeneticAlgorithmInstance(AbstractInstance):
     ################
 
     async def start_ga(self):
-
-        # --> 1. Check container running
-        if await self.get_instance_state() != 'running' or not await self.container_running():
-            return False
-
-        # --> 2. Send start msg
-        response = await SqsClient.send_start_ga_msg(self.private_request_url,
-                                                     self.eosscontext.group_id,
-                                                     self.eosscontext.problem_id,
-                                                     self.eosscontext.dataset_id,
-                                                     self.private_response_url)
-        return response is not None
+        return True
 
     async def stop_ga(self):
-
-        # --> 1. Check container running
-        if await self.get_instance_state() != 'running' or not await self.container_running():
-            return False
-
-        # --> 2. Send start msg
-        response = await SqsClient.send_stop_ga_msg(self.private_request_url, self.private_response_url)
-        return response is not None
+        return True
 
     async def apply_feature(self):
-        return 0
+        return True
 
 
 

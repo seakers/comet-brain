@@ -40,7 +40,7 @@ class UserInformation(models.Model):
     design_evaluator_response_queue_url = models.TextField(null=True)
 
     # --> Genetic Algorithm
-    genetic_algorithm_instance_count = models.IntegerField(default=0)
+    genetic_algorithm_instance_count = models.IntegerField(default=1)
     genetic_algorithm_request_queue_name = models.TextField(null=True)  # user-1-comet-algorithm-request-queue
     genetic_algorithm_request_queue_url = models.TextField(null=True)
     genetic_algorithm_response_queue_name = models.TextField(null=True)  # user-1-comet-algorithm-response-queue
