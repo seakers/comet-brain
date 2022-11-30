@@ -88,9 +88,8 @@ class Training:
 
     def train_fast(self):
         roles_dataset, intents_dataset = self.load_training_data()
-        processes = [
-            Process(target=self.train_transformer, args=(roles_dataset, "General", "multi",))
-        ]
+        self.train_transformer(roles_dataset, "General", "multi")
+        processes = []
         for i, intent_dataset in enumerate(intents_dataset):
             processes.append(
                 Process(target=self.train_transformer, args=(intent_dataset, self.roles[i], "single",))
