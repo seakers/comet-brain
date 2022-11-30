@@ -90,7 +90,7 @@ class Training:
         roles_dataset, intents_dataset = self.load_training_data()
 
         processes = []
-        proc = Process(target=self.train_transformer, args=(roles_dataset, roles_dataset, "General", "multi",))
+        proc = Process(target=self.train_transformer, args=(roles_dataset, "General", "multi",))
         processes.append(proc)
 
         for proc in processes:
