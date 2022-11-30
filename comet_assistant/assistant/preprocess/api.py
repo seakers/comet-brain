@@ -8,8 +8,10 @@ from comet_assistant.assistant.preprocess.Substitutions import Substitutions
 class Preprocessing:
 
     def __init__(self):
-        self.templates_path = '/app/comet_assistant/assistant/questions'
-        self.data_path = '/app/comet_assistant/assistant/data'
+        # self.app_path = '/app'
+        self.app_path = '/home/ec2-user/repos/comet-brain'
+        self.templates_path = self.app_path + '/comet_assistant/assistant/questions'
+        self.data_path = self.app_path + '/comet_assistant/assistant/data'
         self.templates = self.load_templates()
         self.substitutions = Substitutions()
 
