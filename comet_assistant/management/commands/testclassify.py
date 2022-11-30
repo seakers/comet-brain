@@ -9,12 +9,13 @@ class Command(BaseCommand):
         print('--> TEST COMMAND CLASSIFICATION')
         classifier = Classifier()
 
-        command = 'why does design 5 have this science score'
+        command = 'what are the strengths of design 5?'
 
-        result = classifier.classify_role(command)
+        role_result = classifier.classify_role(command)
+        print('--> ROLE:', classifier.get_role(role_result))
 
-        print(result)
-
+        intent_result = classifier.classify_role_intent(command, role_result)
+        print('--> INTENT:', classifier.get_intent(role_result, intent_result))
 
 
 
