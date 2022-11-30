@@ -8,8 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print('--> TRAINING MODELS')
         client = Training()
-        # client.train()
-        client.train_fast()
+        client.train()
 
 
 

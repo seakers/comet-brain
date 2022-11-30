@@ -75,8 +75,6 @@ class Training:
             intents_hf_dataset.append(Dataset.from_dict(ds))
         return roles_hf_dataset, intents_hf_dataset
 
-
-
     def train(self):
         roles_dataset, intents_dataset = self.load_training_data()
 
@@ -85,19 +83,6 @@ class Training:
         for i, intent_dataset in enumerate(intents_dataset):
             self.train_transformer(intent_dataset, self.roles[i], "single")
 
-
-    def train_fast(self):
-        roles_dataset, intents_dataset = self.load_training_data()
-        self.train_transformer(roles_dataset, "General", "multi")
-        processes = []
-        for i, intent_dataset in enumerate(intents_dataset):
-            processes.append(
-                Process(target=self.train_transformer, args=(intent_dataset, self.roles[i], "single",))
-            )
-        for proc in processes:
-            proc.start()
-        for proc in processes:
-            proc.join()
 
 
     def train_transformer(self, dataset, role, classification_type):

@@ -27,10 +27,12 @@ class Command(APIView):
         classifier = Classifier()
 
         role_result = classifier.classify_role(command)
-        print('--> ROLE: ', classifier.get_role(role_result))
+        role = classifier.get_role(role_result)
+        print('--> ROLE:', role)
 
         intent_result = classifier.classify_role_intent(command, role_result)
-        print('--> INTENT:', intent_result)
+        intent = classifier.get_intent(role, intent_result)
+        print('--> INTENT:', intent)
 
         return Response({'status': 'success'})
 
