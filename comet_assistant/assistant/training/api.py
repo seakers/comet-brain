@@ -21,8 +21,7 @@ NUM_EPOCHS = 5  # Number of training epochs
 class Training:
 
     def __init__(self):
-        # self.app_path = '/app'
-        self.app_path = '/home/ubuntu/repos/comet-brain'
+        self.app_path = '/app'
         self.model_path = self.app_path + '/comet_assistant/assistant/models'
         self.data_path = self.app_path + '/comet_assistant/assistant/data'
         self.roles = ["Analyst", "Engineer", "Critic", "Historian", "Teacher"]
