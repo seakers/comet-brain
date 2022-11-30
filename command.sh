@@ -5,5 +5,5 @@
 # 2. train
 
 
-cd /app
+# cd /app
 env $(cat .env | tr -d '\r') python3 manage.py $1
