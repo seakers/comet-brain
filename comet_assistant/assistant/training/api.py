@@ -1,4 +1,5 @@
 import os
+from multiprocessing import Process
 from datasets import Dataset
 from transformers import AutoTokenizer, DataCollatorWithPadding, AutoModelForSequenceClassification, TrainingArguments, Trainer
 from pathlib import Path
@@ -83,6 +84,21 @@ class Training:
         self.train_transformer(roles_dataset, "General", "multi")
         for i, intent_dataset in enumerate(intents_dataset):
             self.train_transformer(intent_dataset, self.roles[i], "single")
+
+
+    def train_fast(self):
+        roles_dataset, intents_dataset = self.load_training_data()
+
+        processes = []
+        proc = Process(target=self.train_transformer, args=(roles_dataset, roles_dataset, "General", "multi",))
+        processes.append(proc)
+
+        for proc in processes:
+            proc.start()
+
+        for proc in processes:
+            proc.join()
+
 
     def train_transformer(self, dataset, role, classification_type):
         tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
