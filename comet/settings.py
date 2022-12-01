@@ -205,6 +205,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AWS
 DEPLOYMENT_TYPE = os.environ['DEPLOYMENT_TYPE']
 
+
+##################
+### Comet Path ###
+##################
+COMET_PATH = '/app'
+
+
 #################
 ### NN Models ###
 #################
@@ -212,7 +219,6 @@ NN_MODELS = {}
 LOAD_NN_MODELS = False
 if LOAD_NN_MODELS is True:
     print('--> LOADING NN MODELS')
-    COMET_PATH = '/app'
     import os
     from pathlib import Path
     from transformers import AutoModelForSequenceClassification
