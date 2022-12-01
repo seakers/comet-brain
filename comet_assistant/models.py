@@ -9,10 +9,20 @@ from comet_auth.models import UserInformation
 
 class DialogueHistory(models.Model):
     user_information = models.ForeignKey(UserInformation, on_delete=models.CASCADE)
+    date = models.DateTimeField()
     message = models.TextField()
     message_type = models.TextField()
     message_writer = models.TextField()
-    date = models.DateTimeField()
+    more_info = models.TextField(null=True)
+
+    # --> Hides message from chatbox
+    hidden = models.BooleanField(default=False)
+
+    # --> True when message_writer == User AND user is waiting for brain response
+    loading = models.BooleanField(default=False)
+
+    # --> True when message_writer == User AND brain does not find response
+    response_error = models.BooleanField(default=False)
 
 
 

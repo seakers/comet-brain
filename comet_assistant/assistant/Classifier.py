@@ -25,17 +25,18 @@ class Classifier:
     def get_intent(self, role, intent):
         role = self.get_role(role)
         role_index = self.roles.index(role) + 1
-
         if isinstance(intent, list):
             intent = intent[0]
-
-        intent_file = str(role_index)
+        intent_num = str(role_index)
         if intent >= 10:
-            intent_file += '0'
+            intent_num += '0'
         else:
-            intent_file += '00'
-        intent_file += (str(intent) + '.txt')
-        return intent_file
+            intent_num += '00'
+        intent_num += str(intent)
+        return int(intent_num)
+
+
+
 
 
 

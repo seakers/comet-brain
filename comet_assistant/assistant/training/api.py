@@ -3,6 +3,8 @@ from multiprocessing import Process
 from datasets import Dataset
 from transformers import AutoTokenizer, DataCollatorWithPadding, AutoModelForSequenceClassification, TrainingArguments, Trainer
 from pathlib import Path
+from django.conf import settings
+
 
 # Parameters
 # ==================================================
@@ -21,7 +23,7 @@ NUM_EPOCHS = 5  # Number of training epochs
 class Training:
 
     def __init__(self):
-        self.app_path = '/app'
+        self.app_path = settings.COMET_PATH
         self.model_path = self.app_path + '/comet_assistant/assistant/models'
         self.data_path = self.app_path + '/comet_assistant/assistant/data'
         self.roles = ["Analyst", "Engineer", "Critic", "Historian", "Teacher"]

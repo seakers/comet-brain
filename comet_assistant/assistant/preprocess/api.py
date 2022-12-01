@@ -3,12 +3,13 @@ from string import Template
 import random
 import glob
 from comet_assistant.assistant.preprocess.Substitutions import Substitutions
+from django.conf import settings
 
 
 class Preprocessing:
 
     def __init__(self):
-        self.app_path = '/app'
+        self.app_path = settings.COMET_PATH
         self.templates_path = self.app_path + '/comet_assistant/assistant/questions'
         self.data_path = self.app_path + '/comet_assistant/assistant/data'
         self.templates = self.load_templates()

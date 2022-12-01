@@ -205,6 +205,36 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AWS
 DEPLOYMENT_TYPE = os.environ['DEPLOYMENT_TYPE']
 
+#################
+### NN Models ###
+#################
+NN_MODELS = {}
+LOAD_NN_MODELS = False
+if LOAD_NN_MODELS is True:
+    print('--> LOADING NN MODELS')
+    COMET_PATH = '/app'
+    import os
+    from pathlib import Path
+    from transformers import AutoModelForSequenceClassification
+    model_dict = {}
+    model_folder_path = Path('/app/comet_assistant/assistant/models')
+    for file in os.scandir(model_folder_path):
+        if file.is_dir():
+            role_name = file.name
+            role_model_path = model_folder_path / role_name
+            loaded_model = AutoModelForSequenceClassification.from_pretrained(role_model_path)
+            model_dict[role_name] = loaded_model
+    NN_MODELS = model_dict
+    print('--> FINISHED LOADING NN MODELS')
+
+
+###########
+### NLP ###
+###########
+import spacy
+NLP_MODEL = spacy.load('en_core_web_sm')
+
+
 
 
 LOGGING = {
