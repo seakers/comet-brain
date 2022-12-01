@@ -13,3 +13,4 @@ venv/
 venv_linux/
 comet_assistant/assistant/data
 comet_assistant/assistant/models
+comet_assistant/assistant/models_copy

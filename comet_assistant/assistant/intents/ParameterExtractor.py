@@ -2,7 +2,8 @@ from django.conf import settings
 import operator
 import Levenshtein as lev
 
-from comet_problem.models import Architecture, Problem
+from comet_auth.database.UserDatabase import UserDatabase
+from comet_problem.models import Architecture, Problem, Objective
 
 
 class ParameterExtractor:
@@ -10,13 +11,18 @@ class ParameterExtractor:
 
     def __init__(self, user_info, command_processed):
         self.user_info = user_info
+        self.user_db = UserDatabase(user_info)
         self.command_processed = command_processed
         self.parameter_types = [
-            'Measurement',
-            'DesignID'
+            'measurement',
+            'design_id',
+            'objective_name'
         ]
 
 
+    ########################
+    ### Parameter Search ###
+    ########################
 
     def coarse_feature_search_by_type(self, parameter_type, num_features=1, case_sensitive=False):
         obt_feature_list = self.fine_feature_search_by_type(parameter_type, case_sensitive)
@@ -60,12 +66,16 @@ class ParameterExtractor:
 
     def get_parameter_search_list(self, parameter_type):
         if parameter_type not in self.parameter_types:
-            raise Exception("--> INVALID PARAMETER TYPE")
+            raise Exception("--> Invalid parameter type")
 
-        if parameter_type == 'DesignID':
-            return self.get_design_ids()
-        elif parameter_type == 'Measurement':
-            return self.get_measurements()
+        search_list = []
+        if parameter_type == 'design_id':
+            search_list = self.get_design_ids()
+        elif parameter_type == 'measurement':
+            search_list = self.get_measurements()
+        elif parameter_type == 'objective_name':
+            search_list = self.get_objective_names()
+        return search_list
 
     def get_design_ids(self):
         problem = Problem.objects.get(id=self.user_info.problem_id)
@@ -74,11 +84,27 @@ class ParameterExtractor:
             design_ids.append(str(arch.id))
         return design_ids
 
+    def get_objective_names(self):
+        problem = self.user_db.problem_db.problem
+        objective_names = []
+        for objective in Objective.objects.filter(problem=problem):
+            objective_names.append(objective.name)
+        return objective_names
+
     def get_measurements(self):
         return []
 
 
 
+    ############################
+    ### Parameter Validation ###
+    ############################
+
+    def validate_objective_names(self):
+        return 0
+
+    def validate_design_ids(self):
+        return 0
 
 
 

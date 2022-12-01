@@ -77,19 +77,15 @@ class Classifier:
         elif max_value > 0.90:
             top_number = 3
         else:
-            self.not_answerable()
+            self.not_answerable(max_value)
             return
 
         prediction = self.interpret_logits(logits, top_number=top_number)
         return prediction[0]
 
 
-
-
-
-
-    def not_answerable(self):
-        return 0
+    def not_answerable(self, max_value):
+        raise Exception("Question prediction confidence too low: " + str(max_value))
 
 
 

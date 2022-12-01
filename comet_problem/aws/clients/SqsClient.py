@@ -261,10 +261,10 @@ class SqsClient:
             return await SqsClient.subscribe_to_message(response_url, 'exit')
 
     @staticmethod
-    async def send_eval_msg(request_url, design):
+    async def send_eval_msg(request_url, design, dataset_id, origin='User'):
         response = await call_boto3_client_async('sqs', 'send_message', {
             'QueueUrl': request_url,
-            'MessageBody': 'boto3',
+            'MessageBody': 'evaluate',
             'MessageAttributes': {
                 'msgType': {
                     'StringValue': 'evaluate',
@@ -273,9 +273,18 @@ class SqsClient:
                 "input": {
                     "DataType": "String",
                     "StringValue": design
+                },
+                "dataset_id": {
+                    "DataType": "String",
+                    "StringValue": str(dataset_id)
+                },
+                "origin": {
+                    "DataType": "String",
+                    "StringValue": origin
                 }
             }
         })
+        return response
 
 
 

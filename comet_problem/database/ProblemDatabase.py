@@ -31,6 +31,10 @@ class ProblemDatabase:
             self.problem = self.get_problem()
 
 
+    #############
+    ### Query ###
+    #############
+
     def get_problem(self):
         if self.user_info:
             if self.user_info.problem_id is None:
@@ -45,28 +49,45 @@ class ProblemDatabase:
         else:
             return self.get_default_problems()[0]
 
-
-    def add_user_to_all_problems(self, new_dataset=None):
-        for problem in Problem.objects.all():
-            problem_id, dataset_id = self.add_user_to_problem(problem, new_dataset)
-        self.user_info.problem_id = problem_id
-        self.user_info.dataset_id = dataset_id
-        self.user_info.save()
-
-
-    def add_user_to_default_problems(self, new_dataset=None):
-        problem_id, dataset_id = None, None
-        for problem in self.get_default_problems():
-            problem_id, dataset_id = self.add_user_to_problem(problem, new_dataset)
-        self.user_info.problem_id = problem_id
-        self.user_info.dataset_id = dataset_id
-        self.user_info.save()
-
     def get_default_problems(self):
         if Problem.objects.filter(default=True).exists():
             return Problem.objects.filter(default=True)
         else:
             return ProblemDatabase.insert_default()
+
+    def get_default_dataset(self, problem=None):
+        if not problem:
+            problem = self.problem
+        if Dataset.objects.filter(problem=problem).filter(default=True).exists():
+            return Dataset.objects.get(problem=problem, default=True)
+        else:
+            raise Exception("--> DEFAULT DATASET DOESNT EXIST FOR PROBLEM")
+
+    def get_problem_decisions(self):
+        decisions_info = []
+        for decision in Decision.objects.filter(problem=self.problem).order_by('id'):
+            decision_info = {'name': decision.name, 'id': decision.id, 'type': decision.type, 'alternatives': []}
+            for alternative in Alternative.objects.filter(decision=decision).order_by('id'):
+                decision_info['alternatives'].append({'id': alternative.id, 'value': alternative.value})
+            decisions_info.append(decision_info)
+        return decisions_info
+
+
+
+    def get_problem_design(self, representation):
+        if Architecture.objects.filter(problem=self.problem).filter(representation=representation).exists():
+            return Architecture.objects.filter(problem=self.problem).filter(representation=representation)[0]
+        return None
+
+    def get_user_design(self, representation):
+        if Architecture.objects.filter(user_information=self.user_info).filter(problem=self.problem).filter(representation=representation).exists():
+            return Architecture.objects.filter(user_information=self.user_info).filter(problem=self.problem).filter(representation=representation)[0]
+        return None
+
+
+    #################
+    ### Mutations ###
+    #################
 
     def add_user_to_problem(self, problem=None, new_dataset=None):
 
@@ -99,15 +120,23 @@ class ProblemDatabase:
             user_dataset.save()
             return problem.id, new_dataset.id
 
-    def get_default_dataset(self, problem=None):
-        if not problem:
-            problem = self.problem
-        if Dataset.objects.filter(problem=problem).filter(default=True).exists():
-            return Dataset.objects.get(problem=problem, default=True)
-        else:
-            raise Exception("--> DEFAULT DATASET DOESNT EXIST FOR PROBLEM")
+    def add_user_to_all_problems(self, new_dataset=None):
+        for problem in Problem.objects.all():
+            problem_id, dataset_id = self.add_user_to_problem(problem, new_dataset)
+        self.user_info.problem_id = problem_id
+        self.user_info.dataset_id = dataset_id
+        self.user_info.save()
+
+    def add_user_to_default_problems(self, new_dataset=None):
+        problem_id, dataset_id = None, None
+        for problem in self.get_default_problems():
+            problem_id, dataset_id = self.add_user_to_problem(problem, new_dataset)
+        self.user_info.problem_id = problem_id
+        self.user_info.dataset_id = dataset_id
+        self.user_info.save()
 
 
+    # --------------------------------------------------------
 
 
     ##############

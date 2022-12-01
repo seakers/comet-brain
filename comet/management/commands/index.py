@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
 from comet_problem.database.ProblemDatabase import ProblemDatabase
-from comet_auth.database.UserDatabase import UserDatabase
 
 
 class Command(BaseCommand):

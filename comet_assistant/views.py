@@ -1,4 +1,5 @@
 import os
+import datetime
 
 
 from django.core.exceptions import ValidationError
@@ -26,7 +27,7 @@ class Command(APIView):
             classifier = Classifier()
         except Exception as ex:
             print(ex)
-            return Response({'response_status': 'error', 'message': 'Error creating classifier'})
+            return Response({'response_status': 'error', 'message': 'Error creating classifier: ' + str(ex)})
 
         # --> 2. Classify role
         try:
@@ -35,7 +36,7 @@ class Command(APIView):
             print('--> ROLE:', role)
         except Exception as ex:
             print(ex)
-            return Response({'response_status': 'error', 'message': 'Error classifying role'})
+            return Response({'response_status': 'error', 'message': 'Error classifying role: ' + str(ex)})
 
         # --> 3. Classify intent
         try:
@@ -44,7 +45,7 @@ class Command(APIView):
             print('--> INTENT:', intent)
         except Exception as ex:
             print(ex)
-            return Response({'response_status': 'error', 'message': 'Error classifying intent'})
+            return Response({'response_status': 'error', 'message': 'Error classifying intent: ' + str(ex)})
 
         # --> 4. Handle intent and insert response
         try:
@@ -52,10 +53,10 @@ class Command(APIView):
             intent_handler.process()
         except Exception as ex:
             print(ex)
-            return Response({'response_status': 'error', 'message': 'Error processing intent'})
+            return Response({'response_status': 'error', 'message': 'Error processing intent: ' + str(ex)})
 
         # --> 5. Return ok
-        return Response({'response_status': 'ok'})
+        return Response({'response_status': 'ok', 'message': str(datetime.datetime.now())})
 
 
 

@@ -216,14 +216,15 @@ COMET_PATH = '/app'
 ### NN Models ###
 #################
 NN_MODELS = {}
-LOAD_NN_MODELS = False
+NN_MODELS_PATH = '/app/comet_assistant/assistant/models_copy'
+LOAD_NN_MODELS = True
 if LOAD_NN_MODELS is True:
     print('--> LOADING NN MODELS')
     import os
     from pathlib import Path
     from transformers import AutoModelForSequenceClassification
     model_dict = {}
-    model_folder_path = Path('/app/comet_assistant/assistant/models')
+    model_folder_path = Path(NN_MODELS_PATH)
     for file in os.scandir(model_folder_path):
         if file.is_dir():
             role_name = file.name
