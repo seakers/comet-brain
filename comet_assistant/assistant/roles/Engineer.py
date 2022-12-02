@@ -45,7 +45,7 @@ class Engineer:
     ### Algorithms ###
     ##################
 
-    def small_neighborhood_algorithm(self, target_objective, initial_design, nfe_max=20):
+    def small_neighborhood_algorithm(self, target_objective, initial_design, nfe_max=10):
         nfe = 0
         running = True
         target_value = target_objective['value']
@@ -55,6 +55,7 @@ class Engineer:
         current_pop_values = [ObjectiveValue.objects.get(architecture=initial_design, objective=objective).value]
         eval_design = None
         new_design = None
+        new_design_id = None
         new_obj_value = None
 
         while nfe < nfe_max and running:
@@ -62,6 +63,7 @@ class Engineer:
             user_info = self.user_db.user_info
             async_to_sync(SqsClient.send_eval_msg)(user_info.design_evaluator_request_queue_url, new_design, user_info.dataset_id, 'Engineer')
             eval_design = self.subscribe_to_arch(new_design)
+            new_design_id = eval_design.id
             current_pop.append(eval_design)
             new_obj_value = ObjectiveValue.objects.get(architecture=eval_design, objective=objective).value
             current_pop_values.append(new_obj_value)
@@ -79,6 +81,7 @@ class Engineer:
             'running': running,
             'target_rep': initial_design.representation,
             'new_design_rep': new_design,
+            'new_design_id': new_design_id,
             'current_pop': [arch.representation for arch in current_pop],
             'current_pop_values': current_pop_values,
             'optimization': optimization,

@@ -61,7 +61,7 @@ class IntentHandler:
             message = 'I was able to improve ' + objective_name + ' by ' + str(report['improvement'])
             message += (' by changing the following design variables: ' + report['target_rep'] + ' --> ' + report['new_design_rep'])
         else:
-            message = 'I was not able to improve on the original ' + objective_name + ' score of ' + report['target_value'] + ' for design ' + report['target_rep'] + ' over ' + report['nfe'] + 'nfe'
+            message = 'I was not able to improve on the original ' + objective_name + ' score of ' + str(report['target_value']) + ' for design ' + report['target_rep'] + ' over ' + str(report['nfe']) + 'nfe'
         print('\n'+message+'\n')
 
         # --> 3. Insert response
@@ -77,7 +77,8 @@ class IntentHandler:
         self.insert_msg('intent_4000', '4000', 'Historian')
 
     def intent_5000(self):
-        self.insert_msg('intent_5000', '5000', 'Teacher')
+        message = 'Delta-V is a measure of the impulse per unit of spacecraft mass that is needed to perform a maneuver'
+        self.insert_msg(message, '5000', 'Teacher')
 
 
 
