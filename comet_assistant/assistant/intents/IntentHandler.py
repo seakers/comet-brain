@@ -5,6 +5,8 @@ from django.conf import settings
 from comet_assistant.assistant.intents.ParameterExtractor import ParameterExtractor
 from comet_assistant.assistant.roles.Engineer import Engineer
 from comet_assistant.models import DialogueHistory
+from comet_auth.database.UserDatabase import UserDatabase
+
 
 class IntentHandler:
 
@@ -16,6 +18,7 @@ class IntentHandler:
         self.command_processed = settings.NLP_MODEL(self.command.strip())
         self.intent = intent
         self.extractor = ParameterExtractor(self.user_info, self.command_processed)
+        self.user_db = UserDatabase(user_info)
 
     def process(self):
         intent_func = 'intent_' + str(self.intent)
@@ -39,6 +42,23 @@ class IntentHandler:
 
     def intent_1000(self):
         self.insert_msg('intent_1000', '1000', 'Analyst')
+
+    def intent_1001(self):
+        # --> User asks about a parameter of the design
+
+        # --> 1. Extract features
+        parameter_name = self.extractor.coarse_feature_search_by_type('parameter_name', num_features=1)
+        print(parameter_name)
+        if len(parameter_name) == 0:
+            raise Exception("Error parsing parameters: intent_1001")
+        parameter_name = str(parameter_name[0])
+        parameter = self.user_db.problem_db.get_parameter(parameter_name)
+        print(parameter)
+        if not parameter:
+            raise Exception("Error getting parameter name: intent_1001")
+
+        message = parameter_name + ' is ' + parameter.value + parameter.units
+        self.insert_msg(message, '1001', 'Analyst')
 
     def intent_2000(self):
         self.insert_msg('intent_2000', '2000', 'Engineer')

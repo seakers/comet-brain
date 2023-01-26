@@ -55,11 +55,11 @@ class GeneticAlgorithmInstance(AbstractInstance):
             },
             {
                 'Key': 'APOLLO_URL',
-                'Value': 'http://graphql.comet:8080/v1/graphql'
+                'Value': 'https://comet.selva-research.com/graphql/v1/graphql'
             },
             {
                 'Key': 'APOLLO_URL_WS',
-                'Value': 'ws://graphql.comet:8080/v1/graphql'
+                'Value': 'wss://comet.selva-research.com/graphql/v1/graphql'
             },
             {
                 'Key': 'EVAL_REQUEST_URL',

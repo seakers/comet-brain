@@ -1,20 +1,39 @@
 version: '3.7'
 services:
-  brain:
-    build:
-      dockerfile: DockerfileDev
-      context: .
-    image: apazagab/comet-brain:latest
+  postgres:
+    image: postgres:14
     ports:
-      - 8000:8000
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=comet
+      - POSTGRES_PASSWORD=comet
+      - POSTGRES_DB=comet
     volumes:
-      - type: bind
-        source: .
-        target: /app
-    tty: true
-    container_name: comet-brain
-    command: bash
-networks:
-  default:
-    name: comet-network
-    external: true
+      - ./databases/pgsql:/var/lib/postgresql/data
+    container_name: comet_database
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    container_name: comet_redis
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+      - "5671:5671"
+    hostname: "my-rabbitmq"
+    container_name: comet_rabbitmq
+  graphql:
+    image: hasura/graphql-engine:latest
+    ports:
+      - "6002:8080"
+    depends_on:
+      - "postgres"
+    restart: always
+    environment:
+      - HASURA_GRAPHQL_DATABASE_URL=postgres://comet:comet@postgres:5432/comet
+      - HASURA_GRAPHQL_ENABLE_CONSOLE=true
+      - HASURA_GRAPHQL_ADMIN_SECRET=comet
+      - HASURA_GRAPHQL_LIVE_QUERIES_MULTIPLEXED_REFETCH_INTERVAL=100
+    container_name: comet_graphql

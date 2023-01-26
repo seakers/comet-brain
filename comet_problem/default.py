@@ -19,6 +19,7 @@ default_problem = {
 
     'parameters': [
         {'name': 'Lifetime', 'units': 'Years', 'type': 'int', 'value': '5'},
+        {'name': 'Delta-V', 'units': 'm/s', 'type': 'int', 'value': '70'},
         {'name': 'Payload Power', 'units': 'Watts', 'type': 'int', 'value': '814'},
         {'name': 'Payload Peak Power', 'units': 'Watts', 'type': 'int', 'value': '864'},
         {'name': 'Bus Power', 'units': 'Watts', 'type': 'int', 'value': '1085'},
@@ -29,6 +30,8 @@ default_problem = {
         {'name': 'Spacecraft Dimensions', 'units': 'M', 'type': 'int-list', 'value': '[2, 2, 2]'},
         {'name': 'Link Data Volume', 'units': 'Gb/Day', 'type': 'int', 'value': '550'},
         {'name': 'Link Datarate', 'units': 'Mbps', 'type': 'int', 'value': '700'},
+        {'name': 'Pointing Requirement', 'units': 'degrees', 'type': 'float', 'value': '0.004166'},
+        {'name': 'Pointing Off Nadir', 'units': 'degrees', 'type': 'float-list', 'value': '[35.0, 0.0]'},
     ],
 
     'decisions': [
@@ -36,8 +39,8 @@ default_problem = {
             'name': 'Orbit',
             'type': 'standard-form',
             'alternatives': [
-                {'value': 'LEO-100-DD', 'description': 'empty'},
-                {'value': 'LEO-200-DD', 'description': 'empty'},
+                {'value': 'LEO-400-DD', 'description': 'empty'},
+                {'value': 'LEO-500-DD', 'description': 'empty'},
                 {'value': 'MEO-1000-DD', 'description': 'empty'},
             ]
         },
@@ -51,6 +54,7 @@ default_problem = {
                 {'value': 'XTJ-CIC', 'description': 'empty'},
                 {'value': 'UTJ-CIC', 'description': 'empty'},
                 {'value': 'XTJ-Prime', 'description': 'empty'},
+                {'value': 'Azur 3G30C', 'description': 'empty'},
             ]
         },
         {
@@ -60,6 +64,10 @@ default_problem = {
                 {'value': 'Saft 8s4p', 'description': 'empty'},
                 {'value': 'Saft 11s16p', 'description': 'empty'},
                 {'value': 'Saft 4s1p VES16', 'description': 'empty'},
+                {'value': 'EaglePicher SAR-10197', 'description': 'empty'},
+                {'value': 'EaglePicher SAR-10199', 'description': 'empty'},
+                {'value': 'EaglePicher SAR-10207', 'description': 'empty'},
+                {'value': 'EaglePicher SAR-10215', 'description': 'empty'}
             ]
         },
         {
@@ -87,14 +95,12 @@ default_problem = {
             'name': 'Solar Array Normal Direction',
             'type': 'standard-form',
             'alternatives': [
-                {'value': '-4', 'description': 'empty'},
                 {'value': '-3', 'description': 'empty'},
                 {'value': '-2', 'description': 'empty'},
                 {'value': '-1', 'description': 'empty'},
                 {'value': '1', 'description': 'empty'},
                 {'value': '2', 'description': 'empty'},
-                {'value': '3', 'description': 'empty'},
-                {'value': '4', 'description': 'empty'}
+                {'value': '3', 'description': 'empty'}
             ]
         }
     ]

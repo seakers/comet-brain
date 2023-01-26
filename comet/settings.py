@@ -59,7 +59,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'comet.HealthCheckMiddleware.HealthCheckMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -96,10 +95,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'comet',
-        'USER': os.environ['SQL_USER'],
-        'PASSWORD': os.environ['SQL_PASSWORD'],
-        'HOST': os.environ['POSTGRES_HOST'],
-        'PORT': os.environ['POSTGRES_PORT'],
+        'USER': 'comet',
+        'PASSWORD': 'comet',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -124,42 +123,17 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # CORS & CSRF
-
-if os.environ['DEPLOYMENT_TYPE'] == 'aws':
-    # CSRF_COOKIE_SECURE = True
-    # CSRF_COOKIE_SAMESITE = 'None'
-    CSRF_COOKIE_DOMAIN = '.selva-research.com'
-    # SESSION_COOKIE_SECURE = True
-    # SESSION_COOKIE_SAMESITE = 'None'
-    SESSION_COOKIE_DOMAIN = '.selva-research.com'
-
-
-
 CORS_ORIGIN_WHITELIST = (
-    'http://daphne.engr.tamu.edu',
     'http://localhost:8080',
-    'http://dev.selva-research.com',
-    'http://prod.selva-research.com',
-    'http://comet-bucket.selva-research.com',
-    'http://comet-load-balancer-761241085.us-east-2.elb.amazonaws.com',
-    'https://comet-load-balancer-761241085.us-east-2.elb.amazonaws.com',
-    'http://comet-services.selva-research.com:8000',
-    'https://comet-services.selva-research.com:443'
+    'https://comet.selva-research.com'
 )
 
 CORS_ALLOW_CREDENTIALS = True
 
 
 CSRF_TRUSTED_ORIGINS = (
-    'http://daphne.engr.tamu.edu',
     'http://localhost:8080',
-    'http://dev.selva-research.com',
-    'http://prod.selva-research.com',
-    'http://comet-bucket.selva-research.com',
-    'http://comet-load-balancer-761241085.us-east-2.elb.amazonaws.com',
-    'https://comet-load-balancer-761241085.us-east-2.elb.amazonaws.com',
-    'http://comet-services.selva-research.com:8000',
-    'https://comet-services.selva-research.com:443'
+    'https://comet.selva-research.com'
 )
 
 
@@ -188,7 +162,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(os.environ['REDIS_HOST'], os.environ['REDIS_PORT'])],
+            "hosts": [('127.0.0.1', '6379')],
         }
     },
 }
@@ -203,20 +177,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # AWS
-DEPLOYMENT_TYPE = os.environ['DEPLOYMENT_TYPE']
+DEPLOYMENT_TYPE = 'AWS'
 
 
 ##################
 ### Comet Path ###
 ##################
-COMET_PATH = '/app'
+COMET_PATH = '/home/ec2-user/comet-brain'
 
 
 #################
 ### NN Models ###
 #################
 NN_MODELS = {}
-NN_MODELS_PATH = '/app/comet_assistant/assistant/models_copy'
+NN_MODELS_PATH = '/home/ec2-user/comet-brain/comet_assistant/assistant/models'
 LOAD_NN_MODELS = True
 if LOAD_NN_MODELS is True:
     print('--> LOADING NN MODELS')

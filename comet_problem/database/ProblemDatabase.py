@@ -84,6 +84,11 @@ class ProblemDatabase:
             return Architecture.objects.filter(user_information=self.user_info).filter(problem=self.problem).filter(representation=representation)[0]
         return None
 
+    def get_parameter(self, name):
+        if Parameter.objects.filter(problem=self.problem).filter(name=name).exists():
+            return Parameter.objects.filter(problem=self.problem).filter(name=name)[0]
+        return None
+
 
     #################
     ### Mutations ###

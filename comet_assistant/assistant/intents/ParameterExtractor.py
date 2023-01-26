@@ -3,7 +3,7 @@ import operator
 import Levenshtein as lev
 
 from comet_auth.database.UserDatabase import UserDatabase
-from comet_problem.models import Architecture, Problem, Objective
+from comet_problem.models import Architecture, Problem, Objective, Parameter
 
 
 class ParameterExtractor:
@@ -16,7 +16,8 @@ class ParameterExtractor:
         self.parameter_types = [
             'measurement',
             'design_id',
-            'objective_name'
+            'objective_name',
+            'parameter_name'
         ]
 
 
@@ -75,6 +76,8 @@ class ParameterExtractor:
             search_list = self.get_measurements()
         elif parameter_type == 'objective_name':
             search_list = self.get_objective_names()
+        elif parameter_type == 'parameter_name':
+            search_list = self.get_parameter_names()
         return search_list
 
     def get_design_ids(self):
@@ -90,6 +93,13 @@ class ParameterExtractor:
         for objective in Objective.objects.filter(problem=problem):
             objective_names.append(objective.name)
         return objective_names
+
+    def get_parameter_names(self):
+        problem = self.user_db.problem_db.problem
+        parameter_names = []
+        for parameter in Parameter.objects.filter(problem=problem):
+            parameter_names.append(parameter.name)
+        return parameter_names
 
     def get_measurements(self):
         return []
