@@ -1,5 +1,6 @@
 from django.db import transaction
 from asgiref.sync import SyncToAsync, sync_to_async
+from operator import itemgetter
 
 # --> Tables
 from django.contrib.auth.models import User
@@ -84,10 +85,51 @@ class ProblemDatabase:
             return Architecture.objects.filter(user_information=self.user_info).filter(problem=self.problem).filter(representation=representation)[0]
         return None
 
+    def get_dataset_designs(self, dataset_id=None):
+        if dataset_id is None:
+            dataset_id = self.user_info.dataset_id
+        dataset = Dataset.objects.get(id=dataset_id)
+        if Architecture.objects.filter(dataset=dataset).exists():
+            return Architecture.objects.filter(dataset=dataset)
+        else:
+            return []
+
+    def get_design_objectives(self, design_id):
+        if not Architecture.objects.filter(id=design_id).exists():
+            return None
+        objectives = []
+        design = Architecture.objects.get(id=design_id)
+        for objective_value in ObjectiveValue.objects.filter(architecture=design):
+            objective = objective_value.objective
+            objectives.append({
+                'name': objective.name,
+                'optimization': objective.optimization,
+                'value': objective_value.value,
+                'id': objective.id,
+            })
+        sorted_objectives = sorted(objectives, key=itemgetter('id'))
+        return sorted_objectives
+
+    def get_problem_objectives(self):
+        objectives = []
+        if Objective.objects.filter(problem=self.problem).exists():
+            for objective in Objective.objects.filter(problem=self.problem):
+                objectives.append(objective)
+        sorted_objectives = sorted(objectives, key=lambda d: d.id)
+        return sorted_objectives
+
+
+
     def get_parameter(self, name):
         if Parameter.objects.filter(problem=self.problem).filter(name=name).exists():
             return Parameter.objects.filter(problem=self.problem).filter(name=name)[0]
         return None
+
+    def get_parameters(self):
+        if Parameter.objects.filter(problem=self.problem).exists():
+            return Parameter.objects.filter(problem=self.problem)
+        return []
+
 
 
     #################

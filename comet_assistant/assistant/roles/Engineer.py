@@ -103,7 +103,7 @@ class Engineer:
         decisions = self.user_db.problem_db.get_problem_decisions()
         arch = random.choice(current_pop)
         rep_str = arch.representation
-        rep_list = self.str_to_list(rep_str)
+        rep_list = Engineer.str_to_list(rep_str)
 
         novel_arch = 0
         mut_prob = 1.0 / len(decisions)
@@ -142,8 +142,8 @@ class Engineer:
     ###############
     ### Helpers ###
     ###############
-
-    def str_to_list(self, int_str):
+    @staticmethod
+    def str_to_list(int_str):
         return [int(x) for x in int_str]
 
     def list_to_str(self, int_list):

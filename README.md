@@ -1,6 +1,22 @@
 # comet-brain
 
 
+
+- Each django app has management/commands folder containing scripts testing the App's API
+
+
+
+
+
+
+
+
+
+
+
+# Deprecated
+
+
 The api which serves all of the Comet App interfaces
 
 ## AWS Deployment
@@ -42,4 +58,14 @@ The api which serves all of the Comet App interfaces
 `docker build -f DockerfileProd -t 923405430231.dkr.ecr.us-east-2.amazonaws.com/comet-brain:latest .`
 
 `docker push 923405430231.dkr.ecr.us-east-2.amazonaws.com/comet-brain:latest`
+
+
+
+
+
+
+
+
+
+
 

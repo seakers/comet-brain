@@ -6,9 +6,7 @@ from . import views
 
 
 urlpatterns = [
-    path('load-problem', views.LoadProblem.as_view(), name='load-problem'),
-
-
+    path('run-data-mining', views.RunDataMining.as_view(), name='run-data-mining'),
 ]
 
 
