@@ -1,10 +1,48 @@
 800
 --
 design_id design_id
-parameter_name parameter_name
+computed_name computed_name
 --
 10000
 --
-what is design ${design_id} ${parameter_name}
-what is the design ${parameter_name}
-what is the mission ${parameter_name}
+what is the ${computed_name} value of this design
+what is the ${computed_name} of this design
+what value does this design have for ${computed_name}
+what is the ${computed_name} value for this design
+what is this design's ${computed_name}
+what is the ${computed_name} for this design
+what is the ${computed_name} of this design set to
+what is the ${computed_name} associated with this design
+what is the ${computed_name} value of this design
+what is the value of ${computed_name} for this mission
+what is ${computed_name}'s value in this mission
+what is the ${computed_name} value for this mission
+what is the ${computed_name} of this mission
+what is the value of ${computed_name} for this mission
+what value does ${computed_name} have for this mission
+what is the ${computed_name} value in this mission
+what is the value of ${computed_name} on this mission
+what is the value of ${computed_name} for design ${design_id}
+what is the ${computed_name} value for design ${design_id}
+what is the ${computed_name} of design ${design_id}
+what is the value of ${computed_name} in design ${design_id}
+what is the ${computed_name} of design ${design_id} set to
+what is the value of ${computed_name} associated with design ${design_id}
+what is the value of the ${computed_name} in design ${design_id}
+what is the value assigned to ${computed_name} for design ${design_id}
+what is the value of ${computed_name} for design ${design_id}
+what is the ${computed_name} set to for design ${design_id}
+what is the value of mission ${design_id}'s ${computed_name}
+what is the ${computed_name}'s value for mission ${design_id}
+what is the value of ${computed_name} for mission ${design_id}
+what is the value of ${computed_name} in mission ${design_id}
+what is mission ${design_id}'s ${computed_name} value
+what is the value of ${computed_name} in relation to mission ${design_id}
+what is the value of the ${computed_name} for architecture ${design_id}
+what is the value of ${computed_name} in architecture ${design_id}
+what is the ${computed_name} value of architecture ${design_id}
+what is the ${computed_name} value for architecture ${design_id}
+what is the ${computed_name} for architecture ${design_id}
+what is the ${computed_name} of architecture ${design_id}
+what is the value of the ${computed_name} associated with architecture ${design_id}
+what is the ${computed_name} of architecture ${design_id} set to

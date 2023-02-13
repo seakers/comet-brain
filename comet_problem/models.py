@@ -58,6 +58,19 @@ class ObjectiveValue(models.Model):
     explanation = models.TextField()
 
 
+class Computed(models.Model):
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    name = models.TextField()
+    aliases = models.TextField(null=True, default=None)  # List of strings encoded in text
+
+
+class ComputedValue(models.Model):
+    architecture = models.ForeignKey(Architecture, on_delete=models.CASCADE)
+    computed = models.ForeignKey(Computed, on_delete=models.CASCADE)
+    value = models.TextField()
+    explanation = models.TextField(null=True, default=None)
+
+
 
 class Parameter(models.Model):
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)

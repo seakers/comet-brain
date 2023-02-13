@@ -191,7 +191,7 @@ COMET_PATH = '/home/ec2-user/comet-brain'
 #################
 NN_MODELS = {}
 NN_MODELS_PATH = '/home/ec2-user/comet-brain/comet_assistant/assistant/models'
-LOAD_NN_MODELS = True
+LOAD_NN_MODELS = False
 if LOAD_NN_MODELS is True:
     print('--> LOADING NN MODELS')
     import os

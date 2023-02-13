@@ -6,7 +6,7 @@ from operator import itemgetter
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 from comet_auth.models import UserInformation
-from comet_problem.models import Problem, UserProblem, Architecture, Objective, ObjectiveValue, Parameter, Decision, Alternative, UserDataset, Dataset
+from comet_problem.models import Problem, UserProblem, Architecture, Objective, ObjectiveValue, Parameter, Decision, Alternative, UserDataset, Dataset, ComputedValue, Computed
 
 from comet_problem.default import default_problem
 
@@ -288,6 +288,7 @@ class ProblemDatabase:
         ProblemDatabase.clean_decisions(problem)
         ProblemDatabase.clean_datasets(problem)
         ProblemDatabase.clean_objectives(problem)
+        ProblemDatabase.clean_computed(problem)
         ProblemDatabase.clean_user_problems(problem)
 
         problem.delete()
@@ -352,6 +353,14 @@ class ProblemDatabase:
                 entry.delete()
 
     @staticmethod
+    def clean_computed(problem):
+        if Computed.objects.filter(problem=problem).exists():
+            entries = Computed.objects.filter(problem=problem)
+            for entry in entries:
+                ProblemDatabase.clean_computed_values(computed=entry)
+                entry.delete()
+
+    @staticmethod
     def clean_objective_values(architecture=None, objective=None):
         if architecture:
             if ObjectiveValue.objects.filter(architecture=architecture).exists():
@@ -361,6 +370,19 @@ class ProblemDatabase:
         if objective:
             if ObjectiveValue.objects.filter(objective=objective).exists():
                 entries = ObjectiveValue.objects.filter(objective=objective)
+                for entry in entries:
+                    entry.delete()
+
+    @staticmethod
+    def clean_computed_values(architecture=None, computed=None):
+        if architecture:
+            if ComputedValue.objects.filter(architecture=architecture).exists():
+                entries = ComputedValue.objects.filter(architecture=architecture)
+                for entry in entries:
+                    entry.delete()
+        if computed:
+            if ComputedValue.objects.filter(computed=computed).exists():
+                entries = ComputedValue.objects.filter(computed=computed)
                 for entry in entries:
                     entry.delete()
 

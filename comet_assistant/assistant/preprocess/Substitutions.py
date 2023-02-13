@@ -2,7 +2,7 @@ from string import Template
 import os
 import random
 import pandas
-from comet_problem.models import Problem, Objective, Parameter
+from comet_problem.models import Problem, Objective, Parameter, Computed
 
 
 
@@ -25,6 +25,7 @@ class Substitutions:
         self.substitutions['year'] = self.subs_year
         self.substitutions['design_id'] = self.subs_design_id
         self.substitutions['objective_name'] = self.subs_objective_name
+        self.substitutions['computed_name'] = self.subs_computed_name
         self.substitutions['parameter_name'] = self.subs_parameter_name
         # self.substitutions['objective'] = self.subs_objective
         # self.substitutions['subobjective'] = self.subs_subobjective
@@ -111,6 +112,13 @@ class Substitutions:
         for objective in Objective.objects.all():
             objectives.append(objective.name)
         return random.choice(objectives)
+
+    def subs_computed_name(self):
+        computed_values = []
+        for computed in Computed.objects.all():
+            # --> TODO: unpack alias names
+            computed_values.append(computed.name)
+        return random.choice(computed_values)
 
     def subs_parameter_name(self):
         parameters = []
